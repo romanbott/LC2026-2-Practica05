@@ -23,7 +23,10 @@ simpSus sbsts = filter (\(x, t) -> t /= Var x) sbsts
 
 -- Funcion que calcula la composicion de dos sustituciones
 compSus :: Subst -> Subst -> Subst
-compSus = undefined
+compSus sbsts1 sbsts2 = (map (\(x, t) -> (x, apsubT t sbsts2)) sbsts1) ++ clean_sbsts2
+  where
+    nombres_sustituidos = map fst sbsts1
+    clean_sbsts2 = filter (\(y, _) -> y `notElem` nombres_sustituidos) sbsts2
 
 -- Funcion que devuelve un umg de dos terminos, si es que lo hay
 unifica :: Term -> Term -> [Subst]
