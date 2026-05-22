@@ -19,7 +19,7 @@ aplicarLista ts sbsts = map (\t -> apsubT t sbsts) ts
 
 -- Funcion que elimina los pares que son de la forma x=x
 simpSus :: Subst -> Subst
-simpSus = undefined
+simpSus sbsts = filter (\(x, t) -> t /= Var x) sbsts
 
 -- Funcion que calcula la composicion de dos sustituciones
 compSus :: Subst -> Subst -> Subst
