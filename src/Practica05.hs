@@ -30,11 +30,26 @@ compSus sbsts1 sbsts2 = (map (\(x, t) -> (x, apsubT t sbsts2)) sbsts1) ++ clean_
 
 -- Funcion que devuelve un umg de dos terminos, si es que lo hay
 unifica :: Term -> Term -> [Subst]
-unifica = undefined
+unifica (Var x) (Var y) = if x == y then [[]] else [[(x, Var y)]]
+unifica (Var x) t = if occurs x t then [] else [[(x, t)]]
+  where
+    occurs x (Var y) = x == y
+    occurs x (Fun _ args) = any (occurs x) args
+unifica t (Var x) = unifica (Var x) t
+unifica (Fun f args1) (Fun g args2) =
+  if f == g && length args1 == length args2
+    then
+      unificaListas args1 args2
+    else []
 
 -- Funcion que devuelve un unificador de dos términos funcionales, si es que lo hay
 unificaListas :: [Term] -> [Term] -> [Subst]
-unificaListas = undefined
+unificaListas [] [] = [[]]
+unificaListas (t : ts) (r : rs) = do
+  s1 <- unifica t r
+  s2 <- unificaListas (aplicarLista ts s1) (aplicarLista rs s1)
+  return (compSus s1 s2)
+unificaListas _ _ = []
 
 -- Funcion que devuelve un umg de una lista de termino, si es que lo hay
 unificaConj :: [Term] -> [Subst]
